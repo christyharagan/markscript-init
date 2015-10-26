@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "declaration": true,
+        "rootDir": "./src",
+        "sourceMap": true,
+        "sourceRoot": ".",
+        "outDir": ".",
+        "moduleResolution": "node"
+    },
+    "formatCodeOptions": {
+        "indentSize": 2,
+        "tabSize": 2
+    },
+    "compileOnSave": true,
+    "filesGlob": [
+        "src/**/*.ts",
+        "typings/**/*.d.ts"
+    ],
+    "files": [
+        "src/lib/index.ts",
+        "src/lib/init.ts",
+        "src/lib/model.ts",
+        "typings/gulp/gulp.d.ts",
+        "typings/inquirer/inquirer.d.ts",
+        "typings/node/node.d.ts",
+        "typings/orchestrator/orchestrator.d.ts",
+        "typings/promise/promise.d.ts",
+        "typings/q/Q.d.ts",
+        "typings/rx/rx-lite.d.ts",
+        "typings/through/through.d.ts",
+        "typings/tsd.d.ts"
+    ],
+    "exclude": []
+}
