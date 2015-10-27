@@ -22,8 +22,9 @@ export function init() {
     inquirer.prompt([
       { type: 'input', name: 'appName', message: 'The name of the application', default: path.basename(process.cwd()).replace(/ /g, '_') },
       { type: 'input', name: 'hostName', message: 'The hostname of the MarkLogic server (leave blank for system hostname)', default: os.hostname().toLowerCase() },
-      { type: 'list', name: 'profile', message: 'The profile to use', choices: ['Basic', 'uServices'] },
-      { type: 'list', name: 'language', message: 'The language to use', choices: ['TypeScript', 'JavaScript'] },
+      { type: 'list', name: 'profile', message: 'The profile to use', choices: ['Full', 'Basic'] },
+      // TODO: Support JavaScript
+      //{ type: 'list', name: 'language', message: 'The language to use', choices: ['TypeScript', 'JavaScript'] },
       { type: 'checkbox', name: 'create', message: 'What does your program require it\'s own?', choices: [{ name: 'HTTP Server', checked: true }, { name: 'Content Database', checked: true }, { name: 'Modules Database', checked: true }, { name: 'Schema Database', checked: true }, { name: 'Triggers Database', checked: true }] },
       {
         type: 'input', name: 'httpPort', message: 'The port of the new HTTP server', default: 8010, when: function(answers) {
@@ -110,7 +111,7 @@ export function init() {
       let config: { [key: string]: string } = {
       }
 
-      if (answers.profile === 'uServices') {
+      if (answers.profile === 'Full') {
         imports.push(['uServicesPlugin', 'markscript-uservices-build'])
         plugins.push('uServicesPlugin')
         configTypes.push('MarkScript.UServicesBuildConfig')
@@ -127,11 +128,15 @@ export function init() {
         }
       }
 
-      if (answers.profile === 'uServices' || answers.createFileServer) {
+      if (answers.profile === 'Full' || answers.createFileServer) {
         common.koa = {
           host: answers.hostName,
           port: 8080
         }
+        config['middle'] = `{
+          host: COMMON.koa.host,
+          port: COMMON.koa.port
+        }`
         imports.push(['Runtime', 'markscript-koa'])
         configTypes.push('MarkScript.KoaBuildConfig')
         packageJSON['dependencies']['markscript-koa'] = '^0.5.0'
