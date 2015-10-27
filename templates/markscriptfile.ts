@@ -13,6 +13,9 @@ export const build: MarkScript.Build = {
       user: COMMON.ml.user,
       password: COMMON.ml.password,
     },
+    database: {
+      modelObject: new <%= appName %>Database(COMMON.appName, COMMON.ml.port, COMMON.ml.host)
+    },
     <% Object.keys(config).forEach(function(key){ %><%= key %>: <%= config[key] %>,
     <% }) %>assetBaseDir: './src'
   },
