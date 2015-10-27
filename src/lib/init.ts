@@ -26,7 +26,7 @@ export function init() {
       { type: 'list', name: 'language', message: 'The language to use', choices: ['TypeScript', 'JavaScript'] },
       { type: 'checkbox', name: 'create', message: 'What does your program require it\'s own?', choices: [{ name: 'HTTP Server', checked: true }, { name: 'Content Database', checked: true }, { name: 'Modules Database', checked: true }, { name: 'Schema Database', checked: true }, { name: 'Triggers Database', checked: true }] },
       {
-        type: 'input', name: 'httpPort', message: 'The port of the new HTTP server', when: function(answers) {
+        type: 'input', name: 'httpPort', message: 'The port of the new HTTP server', default: 8010, when: function(answers) {
           let create = <string[]>answers['create']
           return create.indexOf('HTTP Server') >= 0
         }
@@ -149,14 +149,14 @@ export function init() {
         imports: imports,
         plugins: plugins,
         configTypes: configTypes,
-        common: JSON.stringify(common),
+        common: JSON.stringify(common, null, '  '),
         config: config,
         packageJSON: JSON.stringify(packageJSON, null, '    '),
         srcTSConfig: JSON.stringify(srcTSConfig, null, '    '),
         buildTSConfig: JSON.stringify(buildTSConfig, null, '    ')
       }
 
-      gulp.src(__dirname + '/templates/**')
+      gulp.src(path.join(__dirname, '../templates/**/*'))
         .pipe(template(model))
         .pipe(conflict('./'))
         .pipe(gulp.dest('./'))
