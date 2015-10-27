@@ -18,7 +18,6 @@ interface Answers extends inquirer.Answers {
   features: string[]
   language: string
   create: string[]
-  //createFileServer: boolean
 }
 
 export function init() {
@@ -27,7 +26,6 @@ export function init() {
       { type: 'input', name: 'appName', message: 'The name of the application', default: path.basename(process.cwd()).replace(/ /g, '_') },
       { type: 'input', name: 'hostName', message: 'The hostname of the MarkLogic server (leave blank for system hostname)', default: os.hostname().toLowerCase() },
       { type: 'checkbox', name: 'features', message: 'Which features should be included?', choices: [{name: U_SERVICES, checked: true }, { name: FILE_SERVER, checked: true }, { name: SEMANTICS, checked: true}]},
-      { type: 'list', name: 'profile', message: 'The profile to use', choices: ['Full', 'Basic'] },
       // TODO: Support JavaScript
       //{ type: 'list', name: 'language', message: 'The language to use', choices: ['TypeScript', 'JavaScript'] },
       { type: 'checkbox', name: 'create', message: 'Which database components should be created?', choices: [{ name: 'HTTP Server', checked: true }, { name: 'Content Database', checked: true }, { name: 'Modules Database', checked: true }, { name: 'Schema Database', checked: true }, { name: 'Triggers Database', checked: true }] },
@@ -167,6 +165,7 @@ export function init() {
         hasTriggersDatabase: answers.create.indexOf('Modules Database') >= 0,
         hasSchemaDatabase: answers.create.indexOf('Schema Database') >= 0,
         hasModulesDatabase: answers.create.indexOf('Triggers Database') >= 0,
+        hasSemantics: features[SEMANTICS],
         imports: imports,
         plugins: plugins,
         configTypes: configTypes,

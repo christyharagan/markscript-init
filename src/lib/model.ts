@@ -16,6 +16,7 @@ export interface Model {
   hasTriggersDatabase: boolean
   hasSchemaDatabase: boolean
   hasModulesDatabase: boolean
+  hasSemantics: boolean
 
   imports: [string, string][]
 
