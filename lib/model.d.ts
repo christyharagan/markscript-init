@@ -1,4 +1,5 @@
 export interface Common {
+    appName: string;
     ml: {
         host?: string;
         port: number;

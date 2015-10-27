@@ -38,6 +38,7 @@ export function init() {
       let plugins: string[] = ['basicBuildPlugin']
       let configTypes: string[] = ['MarkScript.BuildConfig', 'MarkScript.BasicBuildConfig']
       let common: Common & { koa?: any } = {
+        appName: answers.appName,
         ml: {
           host: answers.hostName,
           user: 'admin',
