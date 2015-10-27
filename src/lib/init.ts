@@ -8,13 +8,17 @@ let install = require('gulp-install')
 let conflict = require('gulp-conflict')
 let template = require('gulp-template')
 
+const U_SERVICES = 'uServices'
+const FILE_SERVER = 'File Server'
+const SEMANTICS = 'Semantics'
+
 interface Answers extends inquirer.Answers {
   appName: string
   hostName: string
-  profile: string
+  features: string[]
   language: string
   create: string[]
-  createFileServer: boolean
+  //createFileServer: boolean
 }
 
 export function init() {
@@ -22,18 +26,23 @@ export function init() {
     inquirer.prompt([
       { type: 'input', name: 'appName', message: 'The name of the application', default: path.basename(process.cwd()).replace(/ /g, '_') },
       { type: 'input', name: 'hostName', message: 'The hostname of the MarkLogic server (leave blank for system hostname)', default: os.hostname().toLowerCase() },
+      { type: 'checkbox', name: 'features', message: 'Which features should be included?', choices: [{name: U_SERVICES, checked: true }, { name: FILE_SERVER, checked: true }, { name: SEMANTICS, checked: true}]},
       { type: 'list', name: 'profile', message: 'The profile to use', choices: ['Full', 'Basic'] },
       // TODO: Support JavaScript
       //{ type: 'list', name: 'language', message: 'The language to use', choices: ['TypeScript', 'JavaScript'] },
-      { type: 'checkbox', name: 'create', message: 'What does your program require it\'s own?', choices: [{ name: 'HTTP Server', checked: true }, { name: 'Content Database', checked: true }, { name: 'Modules Database', checked: true }, { name: 'Schema Database', checked: true }, { name: 'Triggers Database', checked: true }] },
+      { type: 'checkbox', name: 'create', message: 'Which database components should be created?', choices: [{ name: 'HTTP Server', checked: true }, { name: 'Content Database', checked: true }, { name: 'Modules Database', checked: true }, { name: 'Schema Database', checked: true }, { name: 'Triggers Database', checked: true }] },
       {
         type: 'input', name: 'httpPort', message: 'The port of the new HTTP server', default: 8010, when: function(answers) {
           let create = <string[]>answers['create']
           return create.indexOf('HTTP Server') >= 0
         }
-      },
-      { type: 'confirm', name: 'createFileServer', message: 'Create file server' }
+      }
+//      { type: 'confirm', name: 'createFileServer', message: 'Create file server' }
     ], function(answers: Answers) {
+      let features:{[feature:string]:boolean} = {}
+      answers.features.forEach(function(feature){
+        features[feature] = true
+      })
       let imports: [string, string][] = [['basicBuildPlugin', 'markscript-basic-build']]
       let plugins: string[] = ['basicBuildPlugin']
       let configTypes: string[] = ['MarkScript.BuildConfig', 'MarkScript.BasicBuildConfig']
@@ -112,7 +121,7 @@ export function init() {
       let config: { [key: string]: string } = {
       }
 
-      if (answers.profile === 'Full') {
+      if (features[U_SERVICES]) {
         imports.push(['uServicesPlugin', 'markscript-uservices-build'])
         plugins.push('uServicesPlugin')
         configTypes.push('MarkScript.UServicesBuildConfig')
@@ -122,14 +131,14 @@ export function init() {
         buildTSConfig.files.push('node_modules/markscript-uservices-build/build.d.ts', 'node_modules/markscript-koa/build.d.ts')
       }
 
-      if (answers.createFileServer) {
+      if (features[FILE_SERVER]) {
         config['fileServerPath'] = '\'./www\''
         if (!fs.existsSync(path.join(process.cwd(), 'www'))) {
           fs.mkdirSync(path.join(process.cwd(), 'www'))
         }
       }
 
-      if (answers.profile === 'Full' || answers.createFileServer) {
+      if (features[U_SERVICES] || features[FILE_SERVER]) {
         common.koa = {
           host: answers.hostName,
           port: 8080
@@ -143,6 +152,12 @@ export function init() {
         packageJSON['dependencies']['markscript-koa'] = '^0.5.0'
       } else {
         imports.push(['Runtime', 'markscript-basic-build'])
+      }
+
+      if (features[SEMANTICS]) {
+        packageJSON.dependencies['speckle'] = '^0.2.0'
+        buildTSConfig.filesGlob.push('node_modules/speckle/speckle.d.ts')
+        buildTSConfig.files.push('node_modules/speckle/speckle.d.ts')
       }
 
       let model: Model = {

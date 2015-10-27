@@ -1,5 +1,6 @@
-import {mlDeploy, contentDatabase, triggersDatabase, modulesDatabase, schemaDatabase} from 'markscript-basic-build'
-
+import {mlDeploy, contentDatabase, triggersDatabase, modulesDatabase, schemaDatabase<% if (features.indexOf('Semantics') >= 0){%>, mlRuleSet<%}%>} from 'markscript-basic-build'
+<% if (features.indexOf('Semantics') >= 0){%>import {variable, prefix, rule} from 'speckle'
+<%}%>
 @mlDeploy()
 export class <%= appName %>Database {
   name: string
@@ -23,7 +24,8 @@ export class <%= appName %>Database {
   @contentDatabase()
   get contentDatabase(): MarkScript.DatabaseSpec {
     return {
-      name: this.name + '-content'
+      name: this.name + '-content'<% if (features.indexOf('Semantics') >= 0){%>,
+      triples: true<%}%>
     }
   }<% } %>
 <% if (hasTriggersDatabase) { %>
