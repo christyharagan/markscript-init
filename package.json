@@ -1,6 +1,7 @@
 {
   "name": "markscript-init",
-  "version": "0.2.2",
+  "version": "0.2.3
+  ",
   "description": "A scaffolding library for creating new MarkScript projects",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
