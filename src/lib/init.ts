@@ -35,7 +35,6 @@ export function init() {
           return create.indexOf('HTTP Server') >= 0
         }
       }
-//      { type: 'confirm', name: 'createFileServer', message: 'Create file server' }
     ], function(answers: Answers) {
       let features:{[feature:string]:boolean} = {}
       answers.features.forEach(function(feature){
@@ -104,7 +103,7 @@ export function init() {
           'build/*.ts',
           'test/*.ts',
           'typings/**/*.d.ts',
-          'node_modules/*/model.d.ts',
+          'node_modules/markscript-core/model.d.ts',
           'node_modules/*/build.d.ts'
         ],
         files: [
