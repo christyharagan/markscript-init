@@ -9,6 +9,7 @@ export interface Common {
 }
 export interface Model {
     appName: string;
+    databaseModel: string;
     hasServer: boolean;
     hasContentDatabase: boolean;
     hasTriggersDatabase: boolean;

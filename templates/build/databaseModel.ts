@@ -2,7 +2,7 @@ import {mlDeploy, contentDatabase, triggersDatabase, modulesDatabase, schemaData
 <% if (hasSemantics){%>import {variable, prefix, rule} from 'speckle'
 <%}%>
 @mlDeploy()
-export class <%= appName %>Database {
+export class <%= databaseModel %> {
   name: string
   host: string
   port: number

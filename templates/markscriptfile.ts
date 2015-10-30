@@ -1,4 +1,4 @@
-import {<%= appName %>Database} from './build/databaseModel'
+import {<%= databaseModel %>} from './build/databaseModel'
 <% imports.forEach(function(i){ %>import {<%= i[0] %>} from '<%= i[1] %>'
 <% }) %>
 const COMMON = <%= common %>
@@ -14,7 +14,7 @@ export const build: MarkScript.Build = {
       password: COMMON.ml.password,
     },
     database: {
-      modelObject: new <%= appName %>Database(COMMON.appName, COMMON.ml.port, COMMON.ml.host)
+      modelObject: new <%= databaseModel %>(COMMON.appName, COMMON.ml.port, COMMON.ml.host)
     },
     <% Object.keys(config).forEach(function(key){ %><%= key %>: <%= config[key] %>,
     <% }) %>assetBaseDir: './src'

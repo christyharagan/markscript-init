@@ -18,6 +18,7 @@ interface Answers extends inquirer.Answers {
   features: string[]
   language: string
   create: string[]
+  httpPort: string
 }
 
 export function init() {
@@ -36,6 +37,7 @@ export function init() {
         }
       }
     ], function(answers: Answers) {
+      answers.appName = answers.appName.replace(/ /g, '')
       let features:{[feature:string]:boolean} = {}
       answers.features.forEach(function(feature){
         features[feature] = true
@@ -49,7 +51,7 @@ export function init() {
           host: answers.hostName,
           user: 'admin',
           password: 'admin',
-          port: 8000
+          port: answers.httpPort ? parseInt(answers.httpPort) : 8000
         }
       }
       let packageJSON = {
@@ -76,7 +78,7 @@ export function init() {
         },
         filesGlob: [
           '../api.d.ts',
-          './lib/**/*.ts',
+          './**/*.ts',
           '../node_modules/*/model.d.ts',
           '../node_modules/marklogic-typescript-definitions/ts/index.d.ts'
         ],
@@ -157,14 +159,33 @@ export function init() {
         buildTSConfig.files.push('node_modules/speckle/speckle.d.ts')
       }
 
+      function cleanAppName() {
+        let appName = answers.appName.charAt(0).toUpperCase()
+        let wasDash = false
+        for (let i = 1; i < appName.length; i++) {
+          if (answers.appName.charAt(i) === '-') {
+            wasDash === true
+          } else {
+            if (wasDash) {
+              appName += answers.appName.substring(i, 1).toUpperCase()
+            } else {
+              appName += answers.appName.substring(i, 1)
+            }
+            wasDash = false
+          }
+        }
+        return appName
+      }
+
       let model: Model = {
         appName: answers.appName,
+        databaseModel: cleanAppName() + 'Database',
         hasServer: answers.create.indexOf('HTTP Server') >= 0,
         hasContentDatabase: answers.create.indexOf('Content Database') >= 0,
         hasTriggersDatabase: answers.create.indexOf('Modules Database') >= 0,
         hasSchemaDatabase: answers.create.indexOf('Schema Database') >= 0,
         hasModulesDatabase: answers.create.indexOf('Triggers Database') >= 0,
-        hasSemantics: features[SEMANTICS],
+        hasSemantics: features[SEMANTICS] || false,
         imports: imports,
         plugins: plugins,
         configTypes: configTypes,
