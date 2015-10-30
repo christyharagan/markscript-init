@@ -162,7 +162,7 @@ export function init() {
       function cleanAppName() {
         let appName = answers.appName.charAt(0).toUpperCase()
         let wasDash = false
-        for (let i = 1; i < appName.length; i++) {
+        for (let i = 1; i < answers.appName.length; i++) {
           if (answers.appName.charAt(i) === '-') {
             wasDash === true
           } else {
