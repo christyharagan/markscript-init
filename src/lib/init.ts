@@ -167,9 +167,9 @@ export function init() {
             wasDash === true
           } else {
             if (wasDash) {
-              appName += answers.appName.substring(i, 1).toUpperCase()
+              appName += answers.appName.charAt(i).toUpperCase()
             } else {
-              appName += answers.appName.substring(i, 1)
+              appName += answers.appName.charAt(i)
             }
             wasDash = false
           }
